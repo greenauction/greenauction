@@ -59,7 +59,7 @@ public class ProfileActivity extends AppCompatActivity implements View.OnClickLi
         if(view==viewPortal)
         {
             finish();
-          //  startActivity(new Intent(this,PortalView.class));
+           startActivity(new Intent(this,portalView.class));
         }
         if(view==buttonLogout) {
             finish();
