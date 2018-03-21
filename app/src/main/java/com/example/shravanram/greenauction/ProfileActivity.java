@@ -59,7 +59,7 @@ public class ProfileActivity extends AppCompatActivity implements View.OnClickLi
         if(view==viewPortal)
         {
             finish();
-           startActivity(new Intent(this,portalView.class));
+           startActivity(new Intent(this,Chikoo.class));
         }
         if(view==buttonLogout) {
             finish();

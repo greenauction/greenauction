@@ -2,13 +2,19 @@ package com.example.shravanram.greenauction;
 
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
 import android.util.Log;
+import android.view.View;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
 import android.widget.TextView;
 
+
+import com.firebase.ui.database.FirebaseRecyclerAdapter;
+import com.example.shravanram.greenauction.firebase_models.AuctionCardView1;
 import com.google.firebase.auth.FirebaseAuth;
-import com.google.firebase.database.ChildEventListener;
+
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
@@ -27,71 +33,52 @@ public class portalView extends AppCompatActivity {
     private DatabaseReference cRef;
     private TextView time1;
     String emailno[];
+    private DatabaseReference mRef;
+
+    private RecyclerView ourlist;
     private FirebaseAuth fire=FirebaseAuth.getInstance();
     Calendar c = Calendar.getInstance();
     Date d1,d2;
     String t;
     ListView myList;
-    private ArrayList<String> auctions=new ArrayList<>();
-    private ArrayList<String> auctionsSelect=new ArrayList<>();
+    private ArrayList<String> auctions=new ArrayList<String>();
+    private ArrayList<String> auctionsSelect=new ArrayList<String>();
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_portal_view);
-        myList=findViewById((R.id.list1));
-
+        setContentView(R.layout.activity_chikoo);
+       // myList=(ListView)findViewById((R.id.list1));
+        mRef= FirebaseDatabase.getInstance().getReference().child("auction");
+        mRef.keepSynced(true);
         time1=(TextView)findViewById(R.id.time);
-        final ArrayAdapter<String>arrayAdapter=new ArrayAdapter<String>(this,android.R.layout.simple_list_item_1,auctions);
-        myList.setAdapter(arrayAdapter);
+
         tRef = FirebaseDatabase.getInstance().getReference();
 
-       /* tRef.addChildEventListener(new ChildEventListener() {
-            @Override
-            public void onChildAdded(DataSnapshot dataSnapshot, String s) {
-                for(int i=0;i<auctionsSelect.size();i++) {
-                    String auc = dataSnapshot.child("auction").child(""+auctionsSelect.get(i)).child("deadline").getValue().toString();
-                    auctions.add(auc);
-                }
-                arrayAdapter.notifyDataSetChanged();
-            }
+        ourlist=(RecyclerView)findViewById(R.id.auctions);
+        ourlist.setHasFixedSize(true);
+        //change this line if you make changes in chikoo.xml
+        ourlist.setLayoutManager(new LinearLayoutManager(this));
 
-            @Override
-            public void onChildChanged(DataSnapshot dataSnapshot, String s) {
-
-            }
-
-            @Override
-            public void onChildRemoved(DataSnapshot dataSnapshot) {
-
-            }
-
-            @Override
-            public void onChildMoved(DataSnapshot dataSnapshot, String s) {
-
-            }
-
-            @Override
-            public void onCancelled(DatabaseError databaseError) {
-
-            }
-        });
-      //  tRef =
-      */
-        tRef.addValueEventListener(new ValueEventListener() {
+       tRef.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
+                //gives emailno as an array  as beta1@gmail and com as second element
                 emailno=fire.getCurrentUser().getEmail().toString().split("\\.");
-                String e2=emailno[0];
-                DataSnapshot AuctionID=dataSnapshot.child("Customer").child(e2).child("AuctionID");
+                String emailofcustomer=emailno[0];//contains beta1@gmail
+                DataSnapshot AuctionID=dataSnapshot.child("Customer").child(emailofcustomer).child("AuctionID");
                 Iterable<DataSnapshot> AllAuctions=AuctionID.getChildren();
                 for(DataSnapshot var1:AllAuctions)
                 {
                    String id=var1.getValue().toString();
+
                     t = dataSnapshot.child("auction").child(id).child("deadline").getValue().toString();
+                    Log.d("time",""+t);
+                    //selects all auctions of the current user ,can be ongoing or past
                     auctionsSelect.add(id);
 
-                    SimpleDateFormat sdf = new SimpleDateFormat("MM/dd/yyyy HH:mm aa");
+                    /*SimpleDateFormat sdf = new SimpleDateFormat("MM/dd/yyyy HH:mm aa");
                     String getCurrentDateTime = sdf.format(c.getTime());
                     try {
                         d1 = sdf.parse(getCurrentDateTime);
@@ -100,63 +87,54 @@ public class portalView extends AppCompatActivity {
                         e.printStackTrace();
                     }
 
-
-
-// getCurrentDateTime: 05/23/2016 18:49 PM
 
                     if (d2.after(d1))
 
                     {
-
-                        Log.i("getCurrentDateTime",t);
+                        //ongoing auctions
+                      // Log.i("getCurrentDateTime",t);
                     } else {
-//                        Log.i("getCurrentDateTime", ""+i);
+                    //past auctions
+                      //Log.i("getCurrentDateTime", ""+i);
                     }
-
-
-                }
-                Log.i("hey bitch",auctionsSelect.get(1).toString());
-
-
-               /* String count = dataSnapshot.child("count").getValue().toString().trim();
-                for (int i = 1; i <= Integer.parseInt(count); i++) {
-                    t = dataSnapshot.child("auction").child("" + i).child("deadline").getValue().toString();
-//                    Log.d("deadline", dead);
-
-
-                    //             String t= dataSnapshot.getValue().toString().trim();
-
-                    SimpleDateFormat sdf = new SimpleDateFormat("MM/dd/yyyy HH:mm aa");
-                    String getCurrentDateTime = sdf.format(c.getTime());
-                    try {
-                        d1 = sdf.parse(getCurrentDateTime);
-                        d2 = sdf.parse(t);
-                    } catch (ParseException e) {
-                        e.printStackTrace();
-                    }
-                    ;
-
-
-// getCurrentDateTime: 05/23/2016 18:49 PM
-
-                    if (d1.after(d2))
-
-                    {
-
-                        Log.i("getCurrentDateTime", ""+i);
-                    } else {
-                        Log.i("getCurrentDateTime", ""+i);
-                    }
-
-                }
 */
-            }
+
+                }
+
+
+                }
+
+
 
             @Override
             public void onCancelled(DatabaseError databaseError) {
 
             }
         });
+
     }
+
+    @Override
+    protected void onStart(){
+        super.onStart();
+      // for(int j=0;j<auctionsSelect.size();j++) {
+            FirebaseRecyclerAdapter<AuctionCardView1, Chikoo.BlogviewHolder> firebaseRecyclerAdapter = new FirebaseRecyclerAdapter<AuctionCardView1,
+                    Chikoo.BlogviewHolder>(AuctionCardView1.class, R.layout.blog_row, Chikoo.BlogviewHolder.class,
+                    mRef) {
+                @Override
+                protected void populateViewHolder(Chikoo.BlogviewHolder viewHolder, AuctionCardView1 model, int position) {
+                   // if(mRef.getKey())
+                    if(auctionsSelect.contains(position+1)) {
+                        Log.i("position", "" + position);
+                        viewHolder.setProd(model.getProd());
+                        viewHolder.setLoc(model.getLoc());
+                    }
+                }
+            };
+
+            ourlist.setAdapter(firebaseRecyclerAdapter);
+       // }
+    }
+
 
 }
