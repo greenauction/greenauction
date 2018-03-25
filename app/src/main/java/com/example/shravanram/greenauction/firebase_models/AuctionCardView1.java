@@ -4,12 +4,10 @@ package com.example.shravanram.greenauction.firebase_models;
  */
 
 public class AuctionCardView1 {
-    // private String product;
-
     public String prod, loc, deadline, weight;
     public int qty;
     public float initialbid;
-    // public String email;
+
     public String category;
     public AuctionCardView1(){
 

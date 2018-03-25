@@ -12,17 +12,21 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
         <activity android:name=".MainActivity">
+
+        </activity>
+        <activity android:name=".LoginActivity" />
+        <activity android:name=".ProfileActivity" />
+        <activity android:name=".PortalCreation" />
+        <activity android:name=".portalView" />
+        <activity android:name=".Ongoing" />
+        <activity android:name=".Completed" />
+        <activity android:name=".FarmerBid">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name=".LoginActivity" />
-        <activity android:name=".ProfileActivity"></activity>
-        <activity android:name=".PortalCreation"></activity>
-        <activity android:name=".portalView"></activity>
-        <activity android:name=".Chikoo"></activity>
     </application>
 
 </manifest>
