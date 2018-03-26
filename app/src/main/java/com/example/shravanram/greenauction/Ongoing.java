@@ -1,12 +1,15 @@
 package com.example.shravanram.greenauction;
 
+import android.content.Intent;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.firebase.ui.database.FirebaseRecyclerAdapter;
 import com.example.shravanram.greenauction.firebase_models.AuctionCardView1;
@@ -126,15 +129,57 @@ public class Ongoing extends AppCompatActivity {
               viewHolder.setVisibility(FALSE);
              }
           }
+            @Override
+            public BlogviewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
+                BlogviewHolder viewHolder = super.onCreateViewHolder(parent, viewType);
+                viewHolder.setOnClickListener(new BlogviewHolder.ClickListener() {
+                    @Override
+                    public void onItemClick(View view, int position) {
+                        Toast.makeText(getApplicationContext(), "Item clicked at " + position, Toast.LENGTH_SHORT).show();
+                    }
+
+                    @Override
+                    public void onItemLongClick(View view, int position) {
+                        Toast.makeText(getApplicationContext(), "Item long clicked at " + position, Toast.LENGTH_SHORT).show();
+                    }
+                });
+                return viewHolder;
+            }
         };
         ourlist.setAdapter(firebaseRecyclerAdapter);
     }
     public static class BlogviewHolder extends RecyclerView.ViewHolder {
         View mView;
-        public BlogviewHolder(View itemView){
+        public  BlogviewHolder(View itemView){
             super(itemView);
             mView=itemView;
+            itemView.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    mClickListener.onItemClick(v, getAdapterPosition());
+
+                }
+            });
+            itemView.setOnLongClickListener(new View.OnLongClickListener() {
+                @Override
+                public boolean onLongClick(View v) {
+                    mClickListener.onItemLongClick(v, getAdapterPosition());
+                    return true;
+                }
+            });
         }
+        private BlogviewHolder.ClickListener mClickListener;
+
+        //Interface to send callbacks...
+        public interface ClickListener{
+            public void onItemClick(View view, int position);
+            public void onItemLongClick(View view, int position);
+        }
+
+        public void setOnClickListener(BlogviewHolder.ClickListener clickListener){
+            mClickListener = clickListener;
+        }
+
         public void setProd(String prod){
             TextView produce=(TextView)mView.findViewById(R.id.t1);
             produce.setText(prod);

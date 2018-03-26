@@ -20,13 +20,13 @@
         <activity android:name=".portalView" />
         <activity android:name=".Ongoing" />
         <activity android:name=".Completed" />
-        <activity android:name=".FarmerBid">
-            <intent-filter>
-                <action android:name="android.intent.action.MAIN" />
+        <activity android:name=".FarmerBid"></activity>
+        <activity android:name=".FarmerSide.FarmerOngoing" >
+        <intent-filter>
+            <action android:name="android.intent.action.MAIN" />
 
-                <category android:name="android.intent.category.LAUNCHER" />
-            </intent-filter>
-        </activity>
+            <category android:name="android.intent.category.LAUNCHER" />
+        </intent-filter></activity>
     </application>
 
 </manifest>

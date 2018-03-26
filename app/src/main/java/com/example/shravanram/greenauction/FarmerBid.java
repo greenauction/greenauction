@@ -46,7 +46,7 @@ public class FarmerBid extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_farmer_bid);
         Log.d("count",""+1);
-        mRef= FirebaseDatabase.getInstance().getReference().child("Bids").child("id");
+        mRef= FirebaseDatabase.getInstance().getReference().child("Bids").child("1").child("Fid");
         Log.d("count",""+2);
         mRef.keepSynced(true);
         Log.d("count",""+3);
