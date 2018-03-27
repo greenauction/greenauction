@@ -13,6 +13,7 @@ import android.widget.Toast;
 
 import com.example.shravanram.greenauction.R;
 import com.example.shravanram.greenauction.firebase_models.FarmerAuctionCardView;
+import com.example.shravanram.greenauction.firebase_models.FarmerInfo;
 import com.firebase.ui.database.FirebaseRecyclerAdapter;
 import com.example.shravanram.greenauction.firebase_models.AuctionCardView1;
 import com.google.firebase.auth.FirebaseAuth;
@@ -35,6 +36,7 @@ public class FarmerOngoing extends AppCompatActivity {
     private DatabaseReference tRef;
     private DatabaseReference mRef;
     private FirebaseAuth fire=FirebaseAuth.getInstance();
+    public static  int auctionSel=0;
 
     String emailno[];
     Calendar c = Calendar.getInstance();
@@ -117,6 +119,7 @@ public class FarmerOngoing extends AppCompatActivity {
                 if(auctionsOngoing.contains(""+(position+1)))
                 {
                     //Log.d("pos",""+position);
+                    auctionSel=position+1;
                     viewHolder.setProd(model.getProd());
                     viewHolder.setQty(model.getQty());
                     viewHolder.setDeadline(model.getDeadline());
@@ -124,6 +127,7 @@ public class FarmerOngoing extends AppCompatActivity {
                     viewHolder.setLoc(model.getLoc());
                     viewHolder.setInitialBid(model.getInitialbid());
                     viewHolder.setCategory(model.getCategory());
+                    viewHolder.setPosition();
 
                 }
                 else
@@ -137,7 +141,11 @@ public class FarmerOngoing extends AppCompatActivity {
                 viewHolder.setOnClickListener(new BlogviewHolder.ClickListener() {
                     @Override
                     public void onItemClick(View view, int position) {
-                        Toast.makeText(getApplicationContext(), "Item clicked at " + position, Toast.LENGTH_SHORT).show();
+                        TextView c=(TextView)view.findViewById(R.id.t8);
+                        Toast.makeText(getApplicationContext(), "Item clicked at "+ c.getText() , Toast.LENGTH_SHORT).show();
+                        Intent i=new Intent(getApplicationContext(), FarmerSideViewBidsInAuction.class);
+                       i.putExtra("auctionClicked",c.getText());
+                        startActivity(i);
                     }
 
                     @Override
@@ -155,6 +163,7 @@ public class FarmerOngoing extends AppCompatActivity {
         public  BlogviewHolder(View itemView){
             super(itemView);
             mView=itemView;
+
             itemView.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
@@ -213,6 +222,13 @@ public class FarmerOngoing extends AppCompatActivity {
             TextView cate=(TextView)mView.findViewById(R.id.t7);
             cate.setText(cat);
         }
+
+        public void setPosition()
+        {
+            TextView c=(TextView)mView.findViewById(R.id.t8);
+            c.setText(""+auctionSel);
+        }
+
         public void setVisibility(boolean isVisible){
             RecyclerView.LayoutParams param = (RecyclerView.LayoutParams)itemView.getLayoutParams();
 

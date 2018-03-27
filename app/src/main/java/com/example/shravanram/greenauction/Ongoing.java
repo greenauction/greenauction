@@ -136,6 +136,7 @@ public class Ongoing extends AppCompatActivity {
                     @Override
                     public void onItemClick(View view, int position) {
                         Toast.makeText(getApplicationContext(), "Item clicked at " + position, Toast.LENGTH_SHORT).show();
+
                     }
 
                     @Override
