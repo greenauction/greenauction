@@ -11,5 +11,8 @@ public class Main3Menu extends BaseMenu {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main3_menu);
+
+        //ADD ACTIVITY FOR ongoing AUCTIONS
+        //startActivity(new Intent(getApplicationContext(),ADD ACTIVITY.class));
     }
 }
