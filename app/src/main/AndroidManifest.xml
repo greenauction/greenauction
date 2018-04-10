@@ -11,25 +11,29 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-        <activity android:name=".MainActivity"></activity>
-        <activity android:name=".LoginActivity" />
-        <activity android:name=".ProfileActivity" />
-        <activity android:name=".PortalCreation" />
-        <activity android:name=".portalView" />
-        <activity android:name=".Ongoing" />
-        <activity android:name=".Completed" />
-        <activity android:name=".FarmerBid"></activity>
-        <activity android:name=".FarmerSide.FarmerOngoing">
-            <intent-filter>
+        <activity android:name=".MainActivity">
+         <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
-
         </activity>
-        <activity android:name=".FarmerSide.FarmerSideViewBidsInAuction">
-
-        </activity>
+        
+        <activity android:name=".LoginActivity" />
+        <activity android:name=".ConsumerProfileActivity" />
+        <activity android:name=".PortalCreation" />
+        <activity android:name=".portalView" />
+        <activity android:name=".OngoingConsumerSide" />
+        <activity android:name=".CompletedConsumerSide" />
+        <activity android:name=".FarmerBid" />
+        <activity android:name=".Step1Reg" />
+        <activity android:name=".Step2Reg" />
+        
+        <activity android:name=".FarmerSide.AllOngoingFarmerSide" />
+        <activity android:name=".FarmerProfileActivity" />
+        <activity android:name=".FarmerSide.FarmerSideViewBidsInAuction" />
+        <activity android:name=".EnterBidForm" />
+        
     </application>
 
 </manifest>
