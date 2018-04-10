@@ -7,12 +7,13 @@ public class AuctionCardView1 {
     public String prod, loc, deadline, weight;
     public int qty;
     public float initialbid;
-
     public String category;
+   public String image;
     public AuctionCardView1(){
 
     }
-    public AuctionCardView1(String prod,String loc,String deadline,String weight,int qty,float initialbid,String category){
+    public AuctionCardView1(String prod,String loc,String deadline,String weight,int qty,
+                            float initialbid,String category,String image){
         this.prod=prod;
         this.loc=loc;
         this.deadline=deadline;
@@ -20,6 +21,7 @@ public class AuctionCardView1 {
         this.qty=qty;
         this.initialbid=initialbid;
         this.category=category;
+       // this.image=image;
     }
     public void setLoc(String loc) {
         this.loc = loc;
@@ -76,4 +78,13 @@ public class AuctionCardView1 {
     public void setCategory(String category) {
         this.category = category;
     }
+
+    public String getImage() {
+        return image;
+    }
+
+    public void setImage(String image) {
+        this.image = image;
+    }
+
 }

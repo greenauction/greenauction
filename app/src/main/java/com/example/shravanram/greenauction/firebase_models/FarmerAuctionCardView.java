@@ -7,12 +7,12 @@ public class FarmerAuctionCardView {
     public String prod, loc, deadline, weight;
     public int qty;
     public float initialbid;
-
+    public String image;
     public String category;
     public FarmerAuctionCardView(){
 
     }
-    public FarmerAuctionCardView(String prod,String loc,String deadline,String weight,int qty,float initialbid,String category){
+    public FarmerAuctionCardView(String prod,String loc,String deadline,String weight,int qty,float initialbid,String category,String image){
         this.prod=prod;
         this.loc=loc;
         this.deadline=deadline;
@@ -20,6 +20,7 @@ public class FarmerAuctionCardView {
         this.qty=qty;
         this.initialbid=initialbid;
         this.category=category;
+        this.image=image;
     }
     public void setLoc(String loc) {
         this.loc = loc;
@@ -75,5 +76,12 @@ public class FarmerAuctionCardView {
 
     public void setCategory(String category) {
         this.category = category;
+    }
+    public String getImage() {
+        return image;
+    }
+
+    public void setImage(String image) {
+        this.image = image;
     }
 }
