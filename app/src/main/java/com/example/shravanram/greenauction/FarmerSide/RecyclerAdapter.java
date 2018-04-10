@@ -20,6 +20,9 @@ import java.util.List;
 public class RecyclerAdapter extends RecyclerView.Adapter<RecyclerAdapter.MyHoder>{
     List<FarmerInfo>  list;
     Context context;
+    public RecyclerAdapter(){
+
+    }
     public RecyclerAdapter(List<FarmerInfo> list,Context context)
     {
         this.list=list;
@@ -33,23 +36,23 @@ public class RecyclerAdapter extends RecyclerView.Adapter<RecyclerAdapter.MyHode
     }
     @Override
     public int getItemCount(){
-       int arr=0;
-       try{
-           if(list.size()==0)
-           {
-               arr=0;
-           }
-           else
-           {
-               arr=list.size();
-           }
-       }
-       catch (Exception e )
-       {
+        int arr=0;
+        try{
+            if(list.size()==0)
+            {
+                arr=0;
+            }
+            else
+            {
+                arr=list.size();
+            }
+        }
+        catch (Exception e )
+        {
 
-       }
-       Log.d("count",""+arr);
-       return arr;
+        }
+        Log.d("count",""+arr);
+        return arr;
     }
     @Override
     public void onBindViewHolder(MyHoder holder,int position)
