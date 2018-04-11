@@ -23,13 +23,17 @@ import java.util.Date;
 public class FarmerBid extends AppCompatActivity {
 
     private DatabaseReference tRef;
+
     private DatabaseReference mRef;
+    private DatabaseReference mDatabase;
     private FirebaseAuth fire=FirebaseAuth.getInstance();
 
   //  String emailno[];
     Calendar c = Calendar.getInstance();
     Date d1,d2;
     String t;
+    String e1[];
+    String e2;
 
    // private ArrayList<String> auctionsSelect=new ArrayList<String>();
     //private ArrayList<String> auctionsOngoing=new ArrayList<String>();
@@ -39,6 +43,7 @@ public class FarmerBid extends AppCompatActivity {
 
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_farmer_bid);
+        fire=FirebaseAuth.getInstance();
         Log.d("count",""+1);
         mRef= FirebaseDatabase.getInstance().getReference().child("Bids").child("1").child("Fid");
         Log.d("count",""+2);
@@ -48,6 +53,20 @@ public class FarmerBid extends AppCompatActivity {
         ourlist.setHasFixedSize(true);
         //change this line if you make changes in chikoo.xml
         ourlist.setLayoutManager(new LinearLayoutManager(this));
+
+        mDatabase = FirebaseDatabase.getInstance().getReference();
+
+        e1=fire.getCurrentUser().getEmail().toString().split("\\.");
+        e2=e1[0];
+        Intent i = getIntent();
+        final String auctionId= i.getStringExtra("auctionSelected");
+
+        Intent intent = this.getIntent();
+        String rate = intent.getExtras().getString("rate");
+        String[] rateArray = {rate};
+
+        mDatabase.child("Bids").child(auctionId).child(e2).child("rating").setValue(rateArray);
+
 
     }
     @Override
@@ -76,8 +95,8 @@ public class FarmerBid extends AppCompatActivity {
         View mView;
 
 
-        Intent intent = this.getIntent();
-        String rate = intent.getExtras().getString("rate");
+
+
 
     //CALCULATE RATE
         //COUNT??
@@ -97,12 +116,10 @@ public class FarmerBid extends AppCompatActivity {
         }
         public void setRating(String rating){
             TextView rating1=(TextView)mView.findViewById(R.id.t3);
-            rating1.setText(rate);
+            rating1.setText(rating);
         }
 
 
-        public Intent getIntent() {
-            return intent;
-        }
+
     }
 }
