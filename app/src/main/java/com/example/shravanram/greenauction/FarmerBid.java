@@ -1,11 +1,13 @@
 package com.example.shravanram.greenauction;
 
+import android.content.Intent;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.View;
+import android.widget.EditText;
 import android.widget.TextView;
 
 import com.example.shravanram.greenauction.firebase_models.FarmerInfo;
@@ -63,6 +65,7 @@ public class FarmerBid extends AppCompatActivity {
                     viewHolder.setPrice(model.getPrice());
                     viewHolder.setRating(model.getRating());
 
+
                 }
 
 
@@ -71,6 +74,14 @@ public class FarmerBid extends AppCompatActivity {
     }
     public static class Blogview extends RecyclerView.ViewHolder {
         View mView;
+
+
+        Intent intent = this.getIntent();
+        String rate = intent.getExtras().getString("rate");
+
+    //CALCULATE RATE
+        //COUNT??
+
         public Blogview(View itemView){
             super(itemView);
             mView=itemView;
@@ -86,10 +97,12 @@ public class FarmerBid extends AppCompatActivity {
         }
         public void setRating(String rating){
             TextView rating1=(TextView)mView.findViewById(R.id.t3);
-            rating1.setText(rating);
+            rating1.setText(rate);
         }
 
 
-
+        public Intent getIntent() {
+            return intent;
+        }
     }
 }
