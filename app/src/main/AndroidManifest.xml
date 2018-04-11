@@ -33,7 +33,7 @@
         <activity android:name=".FarmerProfileActivity" />
         <activity android:name=".FarmerSide.FarmerSideViewBidsInAuction" />
         <activity android:name=".EnterBidForm" />
-        
+        <activity android:name=".RatingFarmer"/>
     </application>
 
 </manifest>
