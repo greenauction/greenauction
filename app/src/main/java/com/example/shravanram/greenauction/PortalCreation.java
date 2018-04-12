@@ -116,6 +116,7 @@ public class PortalCreation extends AppCompatActivity {
                 e1=fire.getCurrentUser().getEmail().toString().split("\\.");
                 String e2=e1[0];
                 mDatabase.child("auction").child(c).setValue(info);
+                mDatabase.child("auction").child(c).child("chosen").setValue("no");
 
                mDatabase.child("Consumer").child(e2).child("AuctionID").push().setValue(c);
 

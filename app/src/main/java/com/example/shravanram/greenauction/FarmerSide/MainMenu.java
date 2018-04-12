@@ -11,7 +11,7 @@ import android.widget.EditText;
 import android.widget.Toast;
 
 import com.example.shravanram.greenauction.FarmerBid;
-import com.example.shravanram.greenauction.ProfileActivity;
+//import com.example.shravanram.greenauction.ProfileActivity;
 import com.example.shravanram.greenauction.R;
 import com.example.shravanram.greenauction.firebase_models.PersonInfo;
 import com.google.firebase.FirebaseNetworkException;

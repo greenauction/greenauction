@@ -192,7 +192,7 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
 
                                             finish();
 
-                                            startActivity(new Intent(getApplicationContext(), FarmerNotifications.class));
+                                         //   startActivity(new Intent(getApplicationContext(), FarmerNotifications.class));
                                         }
 
                                     }

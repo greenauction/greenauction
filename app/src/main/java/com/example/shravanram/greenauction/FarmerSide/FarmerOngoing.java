@@ -49,7 +49,7 @@ public class FarmerOngoing extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_ongoing);
+        setContentView(R.layout.activity_ongoing_farmer);
         mRef= FirebaseDatabase.getInstance().getReference().child("auction");
         mRef.keepSynced(true);
 
@@ -62,9 +62,9 @@ public class FarmerOngoing extends AppCompatActivity {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
                 //gives emailno as an array  as beta1@gmail and com as second element
-          //      emailno=fire.getCurrentUser().getEmail().toString().split("\\.");
-            //    String e2=emailno[0];//contains beta1@gmail
-                DataSnapshot AuctionID=dataSnapshot.child("FarmerBid").child("user4@gmail").child("AuctionID");
+               emailno=fire.getCurrentUser().getEmail().toString().split("\\.");
+                String e2=emailno[0];//contains beta1@gmail
+                DataSnapshot AuctionID=dataSnapshot.child("FarmerBid").child(e2).child("AuctionID");
                 Iterable<DataSnapshot> AllAuctions=AuctionID.getChildren();
                 for(DataSnapshot var1:AllAuctions)
                 {

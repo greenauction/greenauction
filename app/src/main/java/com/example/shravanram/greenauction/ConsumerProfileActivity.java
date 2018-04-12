@@ -58,7 +58,8 @@ public class ConsumerProfileActivity extends AppCompatActivity implements View.O
            startActivity(new Intent(this,portalView.class));
         }
         if(view==buttonLogout) {
-           // finish();
+            finish();
+
             firebaseAuth.signOut();
             startActivity(new Intent(this, LoginActivity.class));
         }

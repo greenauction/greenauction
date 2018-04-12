@@ -2,6 +2,7 @@ package com.example.shravanram.greenauction;
 
 import android.app.ProgressDialog;
 import android.content.Context;
+import android.content.Intent;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
@@ -13,6 +14,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.example.shravanram.greenauction.FarmerSide.FarmerSideViewBidsInAuction;
 import com.firebase.ui.database.FirebaseRecyclerAdapter;
 import com.example.shravanram.greenauction.firebase_models.AuctionCardView1;
 import com.google.firebase.auth.FirebaseAuth;
@@ -37,6 +39,7 @@ public class OngoingConsumerSide extends AppCompatActivity {
     private DatabaseReference tRef;
     private DatabaseReference mRef;
     private FirebaseAuth fire=FirebaseAuth.getInstance();
+   public static int auctionSel;
 
     String emailno[];
     Calendar c = Calendar.getInstance();
@@ -116,7 +119,7 @@ public class OngoingConsumerSide extends AppCompatActivity {
         progressDialog.show();
         super.onStart();
         FirebaseRecyclerAdapter<AuctionCardView1,BlogviewHolder>firebaseRecyclerAdapter=new FirebaseRecyclerAdapter<AuctionCardView1,
-                BlogviewHolder>(AuctionCardView1.class,R.layout.blog_row,BlogviewHolder.class,mRef){
+                BlogviewHolder>(AuctionCardView1.class,R.layout.blog_row_card,BlogviewHolder.class,mRef){
           @Override
 
             protected void populateViewHolder(BlogviewHolder viewHolder,AuctionCardView1 model,int position){
@@ -124,6 +127,7 @@ public class OngoingConsumerSide extends AppCompatActivity {
              if(auctionsOngoing.contains(""+(position+1)))
               {
                   //Log.d("pos",""+position);
+                  auctionSel=position+1;
                   viewHolder.setProd(model.getProd());
                   viewHolder.setImage(getApplicationContext(),model.getImage());
                   viewHolder.setQty(model.getQty());
@@ -132,6 +136,7 @@ public class OngoingConsumerSide extends AppCompatActivity {
                   viewHolder.setLoc(model.getLoc());
                   viewHolder.setInitialBid(model.getInitialbid());
                   viewHolder.setCategory(model.getCategory());
+                  viewHolder.setPosition();
 
               }
               else
@@ -145,7 +150,11 @@ public class OngoingConsumerSide extends AppCompatActivity {
                 viewHolder.setOnClickListener(new BlogviewHolder.ClickListener() {
                     @Override
                     public void onItemClick(View view, int position) {
-                        Toast.makeText(getApplicationContext(), "Item clicked at " + position, Toast.LENGTH_SHORT).show();
+                        TextView c=(TextView)view.findViewById(R.id.t8);
+                        Toast.makeText(getApplicationContext(), "Item clicked at " + c.getText(), Toast.LENGTH_SHORT).show();
+                        Intent i=new Intent(getApplicationContext(), ConsumerSideViewBidsInAuction.class);
+                        i.putExtra("auctionClicked",c.getText());
+                        startActivity(i);
                     }
 
                     @Override
@@ -224,6 +233,11 @@ public class OngoingConsumerSide extends AppCompatActivity {
         public void setImage(Context ctx,String img) {
             ImageView imgVw = (ImageView) mView.findViewById(R.id.post_img);
             Picasso.with(ctx).load(img).into(imgVw);
+        }
+        public void setPosition()
+        {
+            TextView c=(TextView)mView.findViewById(R.id.t8);
+            c.setText(""+auctionSel);
         }
         public void setVisibility(boolean isVisible){
             RecyclerView.LayoutParams param = (RecyclerView.LayoutParams)itemView.getLayoutParams();

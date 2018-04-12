@@ -1,14 +1,20 @@
 package com.example.shravanram.greenauction;
 
 import android.app.ProgressDialog;
+import android.content.Context;
+import android.content.Intent;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.View;
+import android.view.ViewGroup;
+import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
+import com.example.shravanram.greenauction.FarmerSide.FarmerSideViewBidsInAuction;
 import com.firebase.ui.database.FirebaseRecyclerAdapter;
 import com.example.shravanram.greenauction.firebase_models.AuctionCardView1;
 import com.google.firebase.auth.FirebaseAuth;
@@ -17,6 +23,7 @@ import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
+import com.squareup.picasso.Picasso;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -28,18 +35,19 @@ import static java.lang.Boolean.FALSE;
 
 public class CompletedConsumerSide extends AppCompatActivity {
 
+    ProgressDialog progressDialog;
     private DatabaseReference tRef;
     private DatabaseReference mRef;
     private FirebaseAuth fire=FirebaseAuth.getInstance();
+    public static int auctionSel;
 
-    ProgressDialog progressDialog;
     String emailno[];
     Calendar c = Calendar.getInstance();
     Date d1,d2;
     String t;
 
     private ArrayList<String> auctionsSelect=new ArrayList<String>();
-    private ArrayList<String> auctionsCompleted=new ArrayList<String>();
+    private ArrayList<String> auctionsOngoing=new ArrayList<String>();
     private RecyclerView ourlist;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -49,6 +57,7 @@ public class CompletedConsumerSide extends AppCompatActivity {
         mRef.keepSynced(true);
 
         progressDialog = new ProgressDialog(this);
+
         ourlist=(RecyclerView)findViewById(R.id.auctions);
         ourlist.setHasFixedSize(true);
         //change this line if you make changes in chikoo.xml
@@ -67,6 +76,7 @@ public class CompletedConsumerSide extends AppCompatActivity {
                     String id=var1.getValue().toString();
                     Log.d("heyyy my id",""+id);
                     t = dataSnapshot.child("auction").child(id).child("deadline").getValue().toString();
+                    String chosen = dataSnapshot.child("auction").child(id).child("chosen").getValue().toString();
                     Log.d("deadline",""+t);
                     //selects all auctions of the current user ,can be ongoing or past
                     auctionsSelect.add(id);
@@ -81,12 +91,12 @@ public class CompletedConsumerSide extends AppCompatActivity {
                     }
 
 
-                    if (d1.after(d2))
+                    if (d1.after(d2)&& chosen.equals("no") )
 
                     {
 
-                        auctionsCompleted.add(id);
-                        //completed auctions
+                        auctionsOngoing.add(id);
+                        //ongoing auctions
 
                     }
 
@@ -106,24 +116,28 @@ public class CompletedConsumerSide extends AppCompatActivity {
     }
     @Override
     protected void onStart(){
-        progressDialog.setMessage("Loading your completed auctions");
+        progressDialog.setMessage("Loading your ongoing auctions");
         progressDialog.show();
         super.onStart();
         FirebaseRecyclerAdapter<AuctionCardView1,BlogviewHolder>firebaseRecyclerAdapter=new FirebaseRecyclerAdapter<AuctionCardView1,
-                BlogviewHolder>(AuctionCardView1.class,R.layout.blog_row,BlogviewHolder.class,mRef){
+                BlogviewHolder>(AuctionCardView1.class,R.layout.blog_row_card,BlogviewHolder.class,mRef){
             @Override
+
             protected void populateViewHolder(BlogviewHolder viewHolder,AuctionCardView1 model,int position){
                 progressDialog.dismiss();
-                if(auctionsCompleted.contains(""+(position+1)))
+                if(auctionsOngoing.contains(""+(position+1)))
                 {
-                    Log.d("pos",""+position);
+                    //Log.d("pos",""+position);
+                    auctionSel=position+1;
                     viewHolder.setProd(model.getProd());
+                    viewHolder.setImage(getApplicationContext(),model.getImage());
                     viewHolder.setQty(model.getQty());
                     viewHolder.setDeadline(model.getDeadline());
                     viewHolder.setWeight(model.getWeight());
                     viewHolder.setLoc(model.getLoc());
                     viewHolder.setInitialBid(model.getInitialbid());
                     viewHolder.setCategory(model.getCategory());
+                    viewHolder.setPosition();
 
                 }
                 else
@@ -131,15 +145,61 @@ public class CompletedConsumerSide extends AppCompatActivity {
                     viewHolder.setVisibility(FALSE);
                 }
             }
+            @Override
+            public BlogviewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
+                BlogviewHolder viewHolder = super.onCreateViewHolder(parent, viewType);
+                viewHolder.setOnClickListener(new BlogviewHolder.ClickListener() {
+                    @Override
+                    public void onItemClick(View view, int position) {
+                        TextView c=(TextView)view.findViewById(R.id.t8);
+                        Toast.makeText(getApplicationContext(), "Item clicked at " + c.getText(), Toast.LENGTH_SHORT).show();
+                        Intent i=new Intent(getApplicationContext(), ConsumerSideViewBidsInAuctionCompleted.class);
+                        i.putExtra("auctionClicked",c.getText());
+                        startActivity(i);
+                    }
+
+                    @Override
+                    public void onItemLongClick(View view, int position) {
+                        Toast.makeText(getApplicationContext(), "Item long clicked at " + position, Toast.LENGTH_SHORT).show();
+                    }
+                });
+                return viewHolder;
+            }
         };
         ourlist.setAdapter(firebaseRecyclerAdapter);
     }
     public static class BlogviewHolder extends RecyclerView.ViewHolder {
         View mView;
-        public BlogviewHolder(View itemView){
+        public  BlogviewHolder(View itemView){
             super(itemView);
             mView=itemView;
+            itemView.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    mClickListener.onItemClick(v, getAdapterPosition());
+
+                }
+            });
+            itemView.setOnLongClickListener(new View.OnLongClickListener() {
+                @Override
+                public boolean onLongClick(View v) {
+                    mClickListener.onItemLongClick(v, getAdapterPosition());
+                    return true;
+                }
+            });
         }
+        private BlogviewHolder.ClickListener mClickListener;
+
+        //Interface to send callbacks...
+        public interface ClickListener{
+            public void onItemClick(View view, int position);
+            public void onItemLongClick(View view, int position);
+        }
+
+        public void setOnClickListener(BlogviewHolder.ClickListener clickListener){
+            mClickListener = clickListener;
+        }
+
         public void setProd(String prod){
             TextView produce=(TextView)mView.findViewById(R.id.t1);
             produce.setText(prod);
@@ -170,6 +230,15 @@ public class CompletedConsumerSide extends AppCompatActivity {
         public void setCategory(String cat){
             TextView cate=(TextView)mView.findViewById(R.id.t7);
             cate.setText(cat);
+        }
+        public void setImage(Context ctx,String img) {
+            ImageView imgVw = (ImageView) mView.findViewById(R.id.post_img);
+            Picasso.with(ctx).load(img).into(imgVw);
+        }
+        public void setPosition()
+        {
+            TextView c=(TextView)mView.findViewById(R.id.t8);
+            c.setText(""+auctionSel);
         }
         public void setVisibility(boolean isVisible){
             RecyclerView.LayoutParams param = (RecyclerView.LayoutParams)itemView.getLayoutParams();
