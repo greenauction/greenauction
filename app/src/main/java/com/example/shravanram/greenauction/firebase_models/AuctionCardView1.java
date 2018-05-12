@@ -9,11 +9,13 @@ public class AuctionCardView1 {
     public float initialbid;
     public String category;
    public String image;
+   public float finalbid;
+   public String winner;
     public AuctionCardView1(){
 
     }
     public AuctionCardView1(String prod,String loc,String deadline,String weight,int qty,
-                            float initialbid,String category,String image){
+                            float initialbid,String category,String image,float finalbid,String winner){
         this.prod=prod;
         this.loc=loc;
         this.deadline=deadline;
@@ -21,8 +23,26 @@ public class AuctionCardView1 {
         this.qty=qty;
         this.initialbid=initialbid;
         this.category=category;
-       // this.image=image;
+        this.finalbid=finalbid;
+        this.winner=winner;
+       this.image=image;
     }
+    public void setFinalbid(float finalbid){
+        this.finalbid=finalbid;
+    }
+    public float getFinalbid(){
+        return finalbid;
+    }
+
+    public void setWinner(String winner)
+    {
+        this.winner=winner;
+    }
+
+    public String getWinner(){
+        return winner;
+    }
+
     public void setLoc(String loc) {
         this.loc = loc;
     }
