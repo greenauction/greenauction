@@ -9,23 +9,12 @@
         android:layout_width="fill_parent"
         android:layout_height="match_parent"
         android:scaleType="fitXY"
-        android:src="@drawable/loginimg"
+        android:src="@drawable/green_auction"
         android:alpha="0.7"
         android:layout_alignParentLeft="true"
         android:layout_alignParentStart="true"
         android:layout_alignParentTop="true" />
 
-    <TextView
-        android:id="@+id/titleofpage"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
 
-        android:layout_alignParentTop="true"
-        android:layout_centerHorizontal="true"
-        android:layout_marginTop="204dp"
-        android:fontFamily="sans-serif"
-        android:text="Green Auction"
-        android:textColor="@android:color/black"
-        android:textSize="42sp" />
 
 </RelativeLayout>
