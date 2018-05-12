@@ -2,18 +2,28 @@ package com.example.shravanram.greenauction.FarmerSide;
 
 import android.content.Context;
 import android.content.Intent;
+import android.support.annotation.NonNull;
+import android.support.design.widget.NavigationView;
+import android.support.v4.widget.DrawerLayout;
+import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.example.shravanram.greenauction.FarmerHomeActivity;
+import com.example.shravanram.greenauction.FarmerViewProfile;
+import com.example.shravanram.greenauction.LoginActivity;
 import com.example.shravanram.greenauction.R;
+import com.example.shravanram.greenauction.SearchActivityForMarketAnalysis;
 import com.example.shravanram.greenauction.firebase_models.FarmerAuctionCardView;
 import com.firebase.ui.database.FirebaseRecyclerAdapter;
 import com.google.firebase.auth.FirebaseAuth;
@@ -33,15 +43,17 @@ import java.util.Date;
 import static java.lang.Boolean.FALSE;
 
 public class AllOngoingFarmerSide extends AppCompatActivity {
-
+    private DrawerLayout drawerLayout;
+    private ActionBarDrawerToggle actionBar;
+    Intent intent;
     private DatabaseReference tRef;
     private DatabaseReference mRef;
     private FirebaseAuth fire=FirebaseAuth.getInstance();
     public static  int auctionSel=0;
-
+    private RelativeLayout relativeLayout;
     String emailno[];
-    Calendar c = Calendar.getInstance();
-    Date d1,d2;
+    public Calendar c = Calendar.getInstance();
+    public Date d1,d2;
     String t;
 
     private ArrayList<String> auctionsSelect=new ArrayList<String>();
@@ -50,7 +62,50 @@ public class AllOngoingFarmerSide extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_ongoing_consumer);
+        setContentView(R.layout.all_ongoing_farmer_side);
+        drawerLayout=(DrawerLayout)findViewById(R.id.d1);
+        relativeLayout=(RelativeLayout)findViewById(R.id.nothingToDisplay);
+        //this nav_view in activity_dummy.xml
+
+        //go to res >values>strings.xml and do the changes
+        actionBar=new ActionBarDrawerToggle(this,drawerLayout,R.string.Open,R.string.Close);
+        actionBar.setDrawerIndicatorEnabled(true);
+        drawerLayout.addDrawerListener(actionBar);
+        actionBar.syncState();
+
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        final NavigationView nav_view=(NavigationView)findViewById(R.id.nav_view);
+        nav_view.setNavigationItemSelectedListener(new NavigationView.OnNavigationItemSelectedListener() {
+            @Override
+            public boolean onNavigationItemSelected(@NonNull MenuItem item) {
+                int id=item.getItemId();
+                if(id==R.id.nav_home){
+                   intent=new Intent(getApplicationContext(),FarmerHomeActivity.class);
+                   startActivity(intent);
+
+                }
+                if(id==R.id.nav_profile){
+                    intent=new Intent(getApplicationContext(),FarmerViewProfile.class);
+                    startActivity(intent);
+                }
+                if(id==R.id.nav_market_analysis){
+                    intent=new Intent(getApplicationContext(),SearchActivityForMarketAnalysis.class);
+                    startActivity(intent);
+
+                }
+
+                if(id==R.id.nav_logout){
+                   // firebaseAuth=FirebaseAuth.getInstance();
+                    fire.signOut();
+                    startActivity(new Intent(getApplicationContext(), LoginActivity.class));
+                }
+
+
+                return true;
+            }
+        });
+
+
         mRef= FirebaseDatabase.getInstance().getReference().child("auction");
         mRef.keepSynced(true);
 
@@ -99,10 +154,13 @@ public class AllOngoingFarmerSide extends AppCompatActivity {
 
 
                 }
+                if(auctionsOngoing.size()==0){
+                    //relativeLayout.setVisibility(View.VISIBLE);
+                    //ourlist.setVisibility(View.GONE);
+                }
 
 
             }
-
 
 
             @Override
@@ -114,13 +172,15 @@ public class AllOngoingFarmerSide extends AppCompatActivity {
     @Override
     protected void onStart(){
         super.onStart();
-        FirebaseRecyclerAdapter<FarmerAuctionCardView,BlogviewHolder>firebaseRecyclerAdapter=new FirebaseRecyclerAdapter<FarmerAuctionCardView,
+        FirebaseRecyclerAdapter<FarmerAuctionCardView,BlogviewHolder>firebaseRecyclerAdapter=
+                new FirebaseRecyclerAdapter<FarmerAuctionCardView,
                 BlogviewHolder>(FarmerAuctionCardView.class, R.layout.blog_row_card,BlogviewHolder.class,mRef){
             @Override
             protected void populateViewHolder(BlogviewHolder viewHolder,FarmerAuctionCardView model,int position){
 
                 if(auctionsOngoing.contains(""+(position+1)))
                 {
+
                     //Log.d("pos",""+position);
                     auctionSel=position+1;
                     viewHolder.setProd(model.getProd());
@@ -169,7 +229,8 @@ public class AllOngoingFarmerSide extends AppCompatActivity {
             super(itemView);
             mView=itemView;
 
-            itemView.setOnClickListener(new View.OnClickListener() {
+            itemView.setOnClickListener(
+                    new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
                     mClickListener.onItemClick(v, getAdapterPosition());
@@ -206,8 +267,40 @@ public class AllOngoingFarmerSide extends AppCompatActivity {
             quantity.setText(""+qty);
         }
         public void setDeadline(String ded){
+            Calendar c1 = Calendar.getInstance();
+            long elapsedDays=0,elapsedHours=0,elapsedMinutes=0;
+            SimpleDateFormat simpleDateFormat = new SimpleDateFormat("MM/dd/yyyy HH:mm aa");
+            String getCurrentDateTime = simpleDateFormat.format(c1.getTime());
+            try {
+                Date date1 = simpleDateFormat.parse(ded);
+                Date date2 = simpleDateFormat.parse(getCurrentDateTime);
+                //ongoing means its even after today's date
+                long different = date1.getTime() - date2.getTime();
+
+
+                //long secondsInMilli = 1000;
+                long minutesInMilli = 1000 * 60;
+                long hoursInMilli = minutesInMilli * 60;
+                long daysInMilli = hoursInMilli * 24;
+
+                 elapsedDays = different / daysInMilli;
+                different = different % daysInMilli;
+
+                elapsedHours = different / hoursInMilli;
+                different = different % hoursInMilli;
+
+                 elapsedMinutes = different / minutesInMilli;
+                different = different % minutesInMilli;
+
+                //long elapsedSeconds = different / secondsInMilli;
+
+
+            } catch (ParseException e) {
+                e.printStackTrace();
+            }
+
             TextView dead=(TextView)mView.findViewById(R.id.t3);
-            dead.setText(ded);
+            dead.setText("Time left:"+elapsedDays+"days "+elapsedHours+"hrs "+elapsedMinutes+"mins");
         }
 
         public void setWeight(String wt){
@@ -216,16 +309,16 @@ public class AllOngoingFarmerSide extends AppCompatActivity {
         }
         public void setLoc(String loc){
             TextView location=(TextView)mView.findViewById(R.id.t5);
-            location.setText(loc);
+            location.setText("Location: "+loc);
         }
 
         public void setInitialBid(float initialBid){
             TextView bid=(TextView)mView.findViewById(R.id.t6);
-            bid.setText(""+initialBid);
+            bid.setText("Initial bid: "+initialBid);
         }
         public void setCategory(String cat){
             TextView cate=(TextView)mView.findViewById(R.id.t7);
-            cate.setText(cat);
+            cate.setText("Category: "+cat);
         }
 
         public void setPosition()
@@ -248,5 +341,15 @@ public class AllOngoingFarmerSide extends AppCompatActivity {
         }
 
 
+    }
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item){
+        return actionBar.onOptionsItemSelected(item);
+    }
+    @Override
+    public void onBackPressed(){
+        super.onBackPressed();
+        Intent i1=new Intent(getApplicationContext(),FarmerHomeActivity.class);
+        startActivity(i1);
     }
 }
